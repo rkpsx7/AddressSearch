@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">AddressSearch</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="bt_clearHistory">Clear history</string>
+    <string name="bt_clearSuggestions">Clear suggestions</string>
+    <string name="bt_clearAll">Clear all</string>
+</resources>
