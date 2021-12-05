@@ -4,31 +4,33 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProviders
 import br.com.mauker.materialsearchview.MaterialSearchView
 import com.example.addresssearch.models.Address
-import com.example.addresssearch.repo.AddressRepo
 import com.example.addresssearch.viewmodels.AddressViewModel
-import com.example.addresssearch.viewmodels.ViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val dataList = ArrayList<Address>()
     private val suggestions = ArrayList<String>()
-    private val repo = AddressRepo()
-    private lateinit var viewModel: AddressViewModel
+
+    // private val repo = AddressRepo()
+    private val viewModel: AddressViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        val vmFactory = ViewModelFactory(repo)
-        viewModel = ViewModelProviders.of(this, vmFactory)[AddressViewModel::class.java]
+        //val vmFactory = ViewModelFactory(repo)
+        //viewModel = ViewModelProviders.of(this, vmFactory)[AddressViewModel::class.java]
         getSearchReady()
 
     }
@@ -40,8 +42,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                CoroutineScope(IO).launch {
-                    withContext(CoroutineScope(IO).coroutineContext) {
+                CoroutineScope(Main).launch {
+                    withContext(CoroutineScope(Main).coroutineContext) {
                         dataList.clear()
                         val xtr = viewModel.getSearchResults(newText).data.addressList
                         dataList.addAll(xtr)
@@ -60,8 +62,8 @@ class MainActivity : AppCompatActivity() {
 
         search_view.setSearchViewListener(object : MaterialSearchView.SearchViewListener {
             override fun onSearchViewOpened() {
-                CoroutineScope(IO).launch {
-                    withContext(CoroutineScope(IO).coroutineContext) {
+                CoroutineScope(Main).launch {
+                    withContext(CoroutineScope(Main).coroutineContext) {
                         dataList.addAll(viewModel.getSearchResults("").data.addressList)
                         for (i in 0 until dataList.size) {
                             suggestions.add(dataList[i].addressString)

@@ -1,7 +1,6 @@
 package com.example.addresssearch
 
 import com.example.addresssearch.remote.ApiClient
-import com.example.addresssearch.remote.Network.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,10 +13,11 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object MainModule {
 
+    @Singleton
     @Provides
     fun providesApiClient(): ApiClient {
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl("https://digi-api.airtel.in/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiClient::class.java)
